@@ -22,11 +22,13 @@
 #include <algorithm>
 #include <string.h>
 
-#if defined(_WIN32) && !defined(__CYGWIN__)
-#include<windows.h>
-extern "C" { OSG_EXPORT DWORD NvOptimusEnablement=0x00000001; }
-#else
-extern "C" { int NvOptimusEnablement=0x00000001; }
+#ifdef USE_NV_OPTIMUS_ENABLEMENT
+    #if defined(_WIN32) && !defined(__CYGWIN__)
+    #include<windows.h>
+    extern "C" { OSG_EXPORT DWORD NvOptimusEnablement=0x00000001; }
+    #else
+    extern "C" { int NvOptimusEnablement=0x00000001; }
+    #endif
 #endif
 
 using namespace osg;
@@ -34,12 +36,18 @@ using namespace std;
 
 void DisplaySettings::setNvOptimusEnablement(int value)
 {
+#ifdef USE_NV_OPTIMUS_ENABLEMENT
     NvOptimusEnablement = value;
+#endif
 }
 
 int DisplaySettings::getNvOptimusEnablement() const
 {
+#ifdef USE_NV_OPTIMUS_ENABLEMENT
     return NvOptimusEnablement;
+#else
+    return 0;
+#endif
 }
 
 ref_ptr<DisplaySettings>& DisplaySettings::instance()
